@@ -2,18 +2,20 @@ version: '3.3'
 
 services:
   2bit-fe:
-    image: rozanfa/
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - REACT_APP_BACKEND_URL="localhost:5000"
     ports:
       - "3000:3000"
     volumes:
       - /app/node_modules
     networks:
       - 2bit-network
-    environment:
-      - REACT_APP_BACKEND_URL=localhost:5000
+#    environment:
+#      - REACT_APP_BACKEND_URL=localhost:5000
+
 
   2bit-be:
     build:
