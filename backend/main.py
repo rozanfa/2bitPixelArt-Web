@@ -11,6 +11,10 @@ app = Flask(__name__)
 
 CORS(app)
 
+# Create public folder if it doesn't exist
+if not os.path.exists('public'):
+    os.makedirs('public')
+
 async def clean_public_folder():
     """
         Delete files older than 5 minutes

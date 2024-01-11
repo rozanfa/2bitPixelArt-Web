@@ -26,6 +26,10 @@ def twobit_pixel_art(image: np.ndarray, pixel_size: int, color_palette: np.ndarr
     np.ndarray
         The pixel art image.
     """
+    # Handle monochrome images
+    if image.ndim == 2:
+        image = np.stack((image,)*3, axis=-1)
+
     # Convert image to RGB if it is RGBA
     if image.shape[2] > 3:
         image = image[:, :, :3]

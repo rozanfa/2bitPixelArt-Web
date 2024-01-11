@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
@@ -37,6 +37,52 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const windowSize = useRef([window.innerWidth, window.innerHeight]);
+  const [imageListBottom, setImageListBottom] = useState<string[]>([]);
+  const [imageListTop, setImageListTop] = useState<string[]>([]);
+
+  window.addEventListener("resize", () => {
+    windowSize.current = [window.innerWidth, window.innerHeight];
+  });
+
+  useEffect(() => {
+    const width = windowSize.current[0];
+    const height = Math.max(windowSize.current[1], document.body.scrollHeight);
+    const imageCount =
+      width < 1024 ? Math.ceil(width / 96) : Math.ceil(height / 54);
+    const colorPalletesLength = Object.keys(colorPalletes).length;
+
+    console.log(imageCount);
+    if (imageListBottom.length == 0) {
+      const randomBottomStartIndex = Math.random() * colorPalletesLength;
+      setImageListBottom(
+        Array(imageCount)
+          .fill(1)
+          .map(
+            (_, i) =>
+              `/shiina/${
+                Object.keys(colorPalletes)[
+                  (i + Math.floor(randomBottomStartIndex)) % colorPalletesLength
+                ]
+              }.png`
+          )
+      );
+    }
+    if (imageListTop.length == 0) {
+      const randomTopStartIndex = Math.random() * colorPalletesLength;
+      setImageListTop(
+        Array(imageCount)
+          .fill(1)
+          .map(
+            (_, i) =>
+              `/shiina/${
+                Object.keys(colorPalletes)[
+                  (i + Math.floor(randomTopStartIndex)) % colorPalletesLength
+                ]
+              }.png`
+          )
+      );
+    }
+  }, [windowSize.current[0], windowSize.current[1]]);
 
   const handlePalleteChange = (e: any) => {
     setPallete(e.target.value);
@@ -80,7 +126,7 @@ function App() {
         console.log(err);
         if (err.code == "ECONNABORTED") {
           setError("Request timeout");
-        } else if (err.response) {
+        } else if (err.status == 400) {
           setError(err.response.data.message);
         } else {
           setError("Something went wrong");
@@ -100,30 +146,20 @@ function App() {
   };
 
   return (
-    <div className="bg-indigo-950">
-      <div className="flex overflow-hidden justify-center">
-        {Array(Math.ceil(windowSize.current[0] / 96))
-          .fill(1)
-          .map((_) => (
-            <img
-              src={`/shiina/${
-                Object.keys(colorPalletes)[
-                  Math.floor(Math.random() * Object.keys(colorPalletes).length)
-                ]
-              }.png`}
-              alt="random-sample"
-              className="w-24"
-            />
-          ))}
+    <div className="bg-indigo-950 flex lg:flex-row justify-between flex-col">
+      <div className="flex overflow-hidden justify-center lg:flex-col">
+        {imageListTop.map((image) => (
+          <img src={image} alt="random-sample" className="w-24" />
+        ))}
       </div>
-      <div className="min-h-screen pt-2 text-white pb-4 px-4">
-        <div className="max-w-[1000px] h-full mx-auto">
+      <div className="min-h-screen pt-2 text-white pb-4 px-4 flex-1">
+        <div className="max-w-[900px] h-full mx-auto">
           <p className="text-xl text-center py-4 font-bold">
             2-bit Pixel Art Generator
           </p>
           <p className="text-center">Input</p>
           <div
-            className="w-full max-w-[1000px] max-h-[800px] border border-white flex justify-center items-center md:h-[50vh] h-[30vh] m-auto rounded bg-slate-900 hover:bg-slate-950 hover:cursor-pointer"
+            className="w-full max-w-[900px] max-h-[800px] border border-white flex justify-center items-center md:h-[50vh] h-[30vh] m-auto rounded bg-slate-900 hover:bg-slate-950 hover:cursor-pointer"
             {...getRootProps()}
           >
             <input {...getInputProps()} />
@@ -205,7 +241,7 @@ function App() {
             {error && <p className="text-rose-500 text-center">{error}</p>}
           </div>
           <p className="text-center">Result</p>
-          <div className="w-full max-w-[1000px] max-h-[800px] border border-white flex justify-center items-center md:h-[50vh] h-[30vh] m-auto rounded bg-slate-900 ">
+          <div className="w-full max-w-[900px] max-h-[800px] border border-white flex justify-center items-center md:h-[50vh] h-[30vh] m-auto rounded bg-slate-900 ">
             <div className="h-full w-full flex">
               {!result ? (
                 <div className="flex flex-col items-center justify-center gap-2 h-full m-auto">
@@ -228,7 +264,7 @@ function App() {
           </div>
           {result && (
             <p className="text-center">
-              Result will be deleted from server after ~5 minutes
+              Result will be deleted from server after {">"}5 minutes
             </p>
           )}
           <button
@@ -244,20 +280,10 @@ function App() {
           </button>
         </div>
       </div>
-      <div className="flex overflow-hidden justify-center">
-        {Array(Math.ceil(windowSize.current[0] / 96))
-          .fill(1)
-          .map((_) => (
-            <img
-              src={`/shiina/${
-                Object.keys(colorPalletes)[
-                  Math.floor(Math.random() * Object.keys(colorPalletes).length)
-                ]
-              }.png`}
-              alt="random-sample"
-              className="w-24"
-            />
-          ))}
+      <div className="flex overflow-hidden justify-center lg:flex-col">
+        {imageListBottom.map((image) => (
+          <img src={image} alt="random-sample" className="w-24" />
+        ))}
       </div>
     </div>
   );
