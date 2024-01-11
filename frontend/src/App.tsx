@@ -91,6 +91,14 @@ function App() {
       setError("Please select an image");
       return;
     }
+
+    if (pixelSize < 1) {
+      setError("Pixel size must be greater than 0");
+      return;
+    }
+
+    setPixelSize(Math.round(pixelSize));
+
     setError("");
     setIsLoading(true);
     setResult("");
@@ -135,10 +143,6 @@ function App() {
 
   const handlePixelSizeChange = (e: any) => {
     let value = e.target.value;
-    value = Math.round(value);
-    if (value < 1) {
-      value = 1;
-    }
     setPixelSize(value);
   };
 
