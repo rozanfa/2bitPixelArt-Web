@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, jsonify
 from flask_cors import CORS
 from generator import twobit_pixel_art, color_palettes
 import matplotlib.pyplot as plt
@@ -42,6 +42,12 @@ async def handle_2bit_pixel_art():
 
     image_file = request.files.get('image')
     image = plt.imread(image_file) # read image as numpy array
+
+    total_pixels = image.shape[0] * image.shape[1]
+    if total_pixels > 8947360:
+        return jsonify({
+            "message": "Image too large. Maximum resolution is 4K"
+        }), 400
     
     pixel_size = int(request.form.get('pixel_size'))
     color_palette = request.form.get('color_palette')
@@ -50,4 +56,6 @@ async def handle_2bit_pixel_art():
     result_file_name = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f") + ".png"
     plt.imsave("public/" + result_file_name, result) # save image to public folder
 
-    return "result/" + result_file_name
+    return jsonify({
+        "result_url": f"result/{result_file_name}"
+    })

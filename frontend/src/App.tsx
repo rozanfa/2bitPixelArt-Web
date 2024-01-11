@@ -15,8 +15,13 @@ const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 function App() {
   const { getRootProps, getInputProps, open } = useDropzone({
     accept: { "image/*": [] },
+    maxSize: 10485760,
     onDrop: (acceptedFiles) => {
       console.log(acceptedFiles);
+      if (acceptedFiles.length == 0) {
+        setError("Image file is too large (Max 10MB)");
+        return;
+      }
       setImage(
         Object.assign(acceptedFiles[0], {
           preview: URL.createObjectURL(acceptedFiles[0]),
@@ -25,7 +30,7 @@ function App() {
     },
   });
   const [image, setImage] = useState<FileWithPreview | null>(null);
-  const [showError, setShowError] = useState(false);
+  const [error, setError] = useState("");
   const [result, setResult] = useState("");
   const [palette, setPallete] = useState("2bit_demichrome");
   const [pixelSize, setPixelSize] = useState(4);
@@ -39,21 +44,21 @@ function App() {
 
   const handleGenerate = async () => {
     if (!image) {
-      setShowError(true);
+      setError("Please select an image");
       return;
     }
-    setShowError(false);
+    setError("");
     setIsLoading(true);
     setResult("");
 
     const data = new FormData();
     data.append("image", image);
-    console.log(image);
     data.append("color_palette", palette);
     data.append("pixel_size", pixelSize.toString());
 
     await axios
       .post(`${backendUrl}/generate/2-bit-pixel-art`, data, {
+        timeout: 30 * 1000,
         onUploadProgress: (progressEvent) => {
           const progress = Math.round(
             (progressEvent.loaded / progressEvent.total!) * 50
@@ -68,9 +73,18 @@ function App() {
         },
       })
       .then((res) => res.data)
-      .then((responseData) => {
-        console.log(responseData);
-        setResult(`${backendUrl}/${responseData}`);
+      .then((responseData: { result_url: string }) => {
+        setResult(`${backendUrl}/${responseData.result_url}`);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.code == "ECONNABORTED") {
+          setError("Request timeout");
+        } else if (err.response) {
+          setError(err.response.data.message);
+        } else {
+          setError("Something went wrong");
+        }
       });
     setIsLoading(false);
     setProgressValue(0);
@@ -121,6 +135,7 @@ function App() {
                   <button className="border px-4 py-2 rounded">
                     Click here to select image
                   </button>
+                  <p>(Maximum file size is 10MB)</p>
                 </div>
               ) : (
                 <img
@@ -132,12 +147,7 @@ function App() {
               )}
             </div>
           </div>
-          {showError && (
-            <p className="text-rose-500 text-center">
-              Please upload an image first
-            </p>
-          )}
-          <div className="w-full flex flex-col md:flex-row items-center justify-center mt-8 mb-4 gap-2">
+          <div className="w-full flex flex-col md:flex-row items-center justify-center mt-8 gap-2 mb-2">
             <div>
               <label className="mx-2">Pixel size:</label>
               <input
@@ -191,6 +201,9 @@ function App() {
               </p>
             </div>
           )}
+          <div className="mb-4">
+            {error && <p className="text-rose-500 text-center">{error}</p>}
+          </div>
           <p className="text-center">Result</p>
           <div className="w-full max-w-[1000px] max-h-[800px] border border-white flex justify-center items-center md:h-[50vh] h-[30vh] m-auto rounded bg-slate-900 ">
             <div className="h-full w-full flex">
