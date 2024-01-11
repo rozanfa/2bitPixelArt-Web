@@ -168,7 +168,7 @@ function App() {
                   <button className="border px-4 py-2 rounded">
                     Click here to select image
                   </button>
-                  <p>
+                  <p className="text-center">
                     (Maximum file size is 10MB and maximum resolution is 4K)
                   </p>
                 </div>
