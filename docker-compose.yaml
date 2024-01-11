@@ -6,7 +6,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - REACT_APP_BACKEND_URL="localhost:5000"
+        - REACT_APP_BACKEND_URL=http://172.188.112.147:5000
     ports:
       - "3000:3000"
     volumes:

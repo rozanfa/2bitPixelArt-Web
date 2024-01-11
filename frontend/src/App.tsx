@@ -207,7 +207,7 @@ function App() {
               ) : (
                 <img
                   className="object-cover max-h-full max-w-full m-auto"
-                  src={`${backendUrl}/${result}`}
+                  src={`${result}`}
                   alt="result"
                 />
               )}
@@ -224,7 +224,7 @@ function App() {
             }
             disabled={!result}
             onClick={() => {
-              window.open(`${backendUrl}/${result}`);
+              window.open(`${result}`);
             }}
           >
             Open Result
