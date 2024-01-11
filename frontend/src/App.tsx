@@ -17,7 +17,6 @@ function App() {
     accept: { "image/*": [] },
     maxSize: 10485760,
     onDrop: (acceptedFiles) => {
-      console.log(acceptedFiles);
       if (acceptedFiles.length == 0) {
         setError("Image file is too large (Max 10MB)");
         return;
@@ -51,7 +50,6 @@ function App() {
       width < 1024 ? Math.ceil(width / 96) : Math.ceil(height / 54);
     const colorPalletesLength = Object.keys(colorPalletes).length;
 
-    console.log(imageCount);
     if (imageListBottom.length == 0) {
       const randomBottomStartIndex = Math.random() * colorPalletesLength;
       setImageListBottom(
@@ -123,7 +121,6 @@ function App() {
         setResult(`${backendUrl}/${responseData.result_url}`);
       })
       .catch((err) => {
-        console.log(err);
         if (err.code == "ECONNABORTED") {
           setError("Request timeout");
         } else if (err.request.status == 400) {
