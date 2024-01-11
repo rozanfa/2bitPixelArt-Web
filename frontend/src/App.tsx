@@ -126,7 +126,7 @@ function App() {
         console.log(err);
         if (err.code == "ECONNABORTED") {
           setError("Request timeout");
-        } else if (err.status == 400) {
+        } else if (err.request.status == 400) {
           setError(err.response.data.message);
         } else {
           setError("Something went wrong");
@@ -171,7 +171,9 @@ function App() {
                   <button className="border px-4 py-2 rounded">
                     Click here to select image
                   </button>
-                  <p>(Maximum file size is 10MB)</p>
+                  <p>
+                    (Maximum file size is 10MB and maximum resolution is 4K)
+                  </p>
                 </div>
               ) : (
                 <img
