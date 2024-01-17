@@ -151,7 +151,7 @@ function GeneratorSection() {
   return (
     <section
       id="generator-section"
-      className="bg-indigo-950 flex lg:flex-row justify-between flex-col pb-4"
+      className="bg-indigo-950 py-8 flex lg:flex-row justify-between flex-col"
     >
       {/* <div className="flex overflow-hidden justify-center lg:flex-col">
         {imageListTop.map((image) => (
