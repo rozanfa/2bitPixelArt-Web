@@ -55,3 +55,7 @@
   border-radius: 8px;
 }
 
+.upper-section {
+  background: rgb(69,24,53);
+  background: linear-gradient(180deg, rgba(11,8,57,1) 0%, rgba(58,9,121,1) 35%, rgba(30,27,75,1) 100%);
+}

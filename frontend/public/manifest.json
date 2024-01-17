@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "2-bit Pixel Art Generator",
+  "name": "Generate 2-bit Pixel Art from images",
   "icons": [
     {
       "src": "favicon.ico",

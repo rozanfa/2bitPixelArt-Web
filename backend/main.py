@@ -48,9 +48,9 @@ async def handle_2bit_pixel_art():
     image = plt.imread(image_file) # read image as numpy array
 
     total_pixels = image.shape[0] * image.shape[1]
-    if total_pixels > 8947360:
+    if total_pixels > 10000000:
         return jsonify({
-            "message": "Image too large. Maximum resolution is 4K"
+            "message": "Image too large. Maximum resolution is ~4K"
         }), 400
     
     pixel_size = int(request.form.get('pixel_size'))
