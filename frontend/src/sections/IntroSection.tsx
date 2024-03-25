@@ -7,7 +7,7 @@ function IntroSection() {
   };
 
   return (
-    <section className="w-full max-w-[1000px] mx-auto p-16 h-screen flex flex-col justify-between border-b">
+    <section className="w-full max-w-[1000px] mx-auto md:p-16 p-8 h-screen flex flex-col justify-between border-b min-h-[700px]">
       <div>
         <h1 className="text-center font-bold text-4xl">
           2-Bit Pixel Art Generator

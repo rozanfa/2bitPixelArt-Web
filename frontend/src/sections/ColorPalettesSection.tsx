@@ -4,7 +4,7 @@ function ColorPalletesSection() {
   return (
     <section
       id="color-palettes-section"
-      className="w-full max-w-[1080px] mx-auto px-16 py-8 border-b h-auto"
+      className="w-full max-w-[1080px] mx-auto md:px-16 px-8 pt-8 pb-16 border-b h-auto"
     >
       <h2 className="text-2xl text-center py-4 font-bold mb-4">
         Color Palettes
